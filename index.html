@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无锡鲜沣食品 - 快捷导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 5px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+
+        .sidebar {
+            width: 160px;
+            background: #2c3e50;
+            color: white;
+            padding: 0 8px;
+            overflow-y: hidden;
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px 0 0 12px;
+        }
+
+        .sidebar-header {
+            position: sticky;
+            top: 0;
+            background: #2c3e50;
+            z-index: 10;
+            padding: 12px 8px;
+            margin: 0 -8px 10px;
+            border-bottom: 1px solid #34495e;
+            text-align: center;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .menu {
+            list-style: none;
+            padding-top: 5px;
+            padding-bottom: 10px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            flex-grow: 1;
+        }
+
+        .menu::-webkit-scrollbar {
+            display: none;
+        }
+
+        .menu-item {
+            margin-bottom: 4px;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 8px;
+            background: #34495e;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .menu-header:hover {
+            background: #3c5774;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .menu-header.active {
+            background: #3498db;
+        }
+
+        .menu-title {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .menu-icon {
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 5px;
+            transition: background 0.2s ease;
+        }
+
+        .menu-icon:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .menu-arrow {
+            transition: transform 0.3s ease;
+            font-size: 0.5rem;
+        }
+
+        .menu-item.expanded .menu-arrow {
+            transform: rotate(90deg);
+        }
+
+        .submenu {
+            list-style: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-left: 8px;
+            margin-top: 3px;
+        }
+
+        .menu-item.expanded .submenu {
+            max-height: 600px;
+        }
+
+        .submenu-item {
+            padding: 5px 8px;
+            background: #3c5774;
+            border-radius: 6px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .submenu-item:hover {
+            background: #4a6b8a;
+            transform: translateX(3px);
+        }
+
+        .submenu-item.active {
+            background: #3498db;
+        }
+
+        .content {
+            flex: 1;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .content-header {
+            padding: 5px 12px;
+            background: #2c3e50;
+            border-bottom: 1px solid #34495e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            row-gap: 5px;
+            position: relative;
+            min-height: auto;
+            justify-content: center;
+        }
+
+        .content-title {
+            font-size: 0.95rem;
+            color: white;
+            font-weight: 600;
+            margin: 0;
+            position: absolute;
+            left: 12px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .shortcut-wrapper {
+            border: 1px solid #5d7fa3;
+            border-radius: 8px;
+            padding: 5px 10px;
+            background-color: #34495e;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            width: auto;
+            max-width: calc(100% - 150px);
+        }
+
+        .shortcut-wrapper .section-title {
+            font-size: 0.75rem;
+            color: #ecf0f1;
+            font-weight: 500;
+            white-space: nowrap;
+            padding-right: 5px;
+            border-right: 1px dashed #5d7fa3;
+        }
+
+        .shortcut-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            row-gap: 3px;
+            overflow: visible;
+        }
+
+        .shortcut-btn {
+            background: #34495e;
+            color: white;
+            border: 1px solid #7f99b3;
+            padding: 3px 7px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            white-space: nowrap;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+
+        .shortcut-btn:hover {
+            background: #3c5774;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            border-color: #9ab4cc;
+        }
+
+        .reset-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 3px 7px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.05);
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            z-index: 5;
+            transform: translateY(-50%);
+            height: auto;
+        }
+
+        .reset-btn:hover {
+            background: #2980b9;
+            transform: translateY(-50%) rotate(5deg);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .iframe-container {
+            flex: 1;
+            padding: 15px;
+            background: white;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .welcome-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 1.3rem;
+            color: #7f8c8d;
+            text-align: center;
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 80%;
+        }
+
+        .error-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #e74c3c;
+            text-align: center;
+            flex-direction: column;
+            gap: 15px;
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 80%;
+        }
+
+        .error-message h3 {
+            font-size: 1.3rem;
+        }
+
+        .error-message button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .error-message button:hover {
+            background: #2980b9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #7f8c8d;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #f1f1f1;
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+        }
+
+        .icon-item {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-item:hover {
+            background: #ecf0f1;
+            transform: scale(1.1);
+        }
+
+        /* 悬浮窗样式：解除所有限制 */
+        .custom-popup {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+        }
+
+        .custom-popup.show {
+            display: block;
+        }
+
+        .popup-drag-handle {
+            cursor: move;
+            user-select: none;
+            width: 100%;
+        }
+
+        .popup-container {
+            position: relative;
+            background-color: #fefefe;
+            min-width: 300px;
+            min-height: 200px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            resize: both; /* 允许手动调节大小 */
+        }
+
+        /* 右下角添加大小调节指示器 */
+        .popup-resize-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 15px;
+            height: 15px;
+            cursor: nwse-resize;
+            background: linear-gradient(135deg, transparent 50%, #ccc 50%);
+            pointer-events: auto;
+        }
+
+        .popup-body {
+            width: 100%;
+            flex-grow: 1;
+            overflow: auto;
+        }
+
+        .popup-header {
+            padding: 10px 16px;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .popup-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .popup-close {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+            z-index: 1002;
+        }
+
+        .popup-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .popup-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 1200px) {
+            .popup-container {
+                max-width: none; /* 解除最大宽度限制 */
+                height: auto; /* 解除高度限制 */
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .shortcut-wrapper {
+                max-width: calc(100% - 120px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 140px;
+                padding: 0 6px;
+            }
+
+            .content-header {
+                padding: 5px 8px;
+                align-items: flex-start;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+
+            .content-title {
+                position: static;
+                margin-bottom: 5px;
+                height: auto;
+            }
+
+            .shortcut-wrapper {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 5px;
+                max-width: 100%;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .shortcut-wrapper .section-title {
+                border-right: none;
+                border-bottom: 1px dashed #5d7fa3;
+                padding-right: 0;
+                padding-bottom: 4px;
+                width: 100%;
+            }
+
+            .reset-btn {
+                position: static;
+                margin-top: 5px;
+                align-self: flex-end;
+                transform: none;
+            }
+
+            .shortcut-buttons {
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+            .shortcut-btn {
+                padding: 2px 6px;
+                font-size: 0.65rem;
+            }
+
+            .popup-container {
+                max-width: none;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📊 无锡鲜沣食品</h2>
+            </div>
+            <ul class="menu" id="menuList">
+                <!-- 菜单项动态生成 -->
+            </ul>
+        </aside>
+
+        <main class="content">
+            <header class="content-header">
+                <h1 class="content-title">当前页面：首页</h1>
+                
+                <div class="shortcut-wrapper">
+                    <div class="section-title">新增记录</div>
+                    <div class="shortcut-buttons" id="shortcutButtons">
+                        <!-- 快捷按键动态生成 -->
+                    </div>
+                </div>
+                
+                <button class="reset-btn" onclick="resetToInitialState()">
+                    🔄 重置
+                </button>
+            </header>
+            <div class="iframe-container" id="iframeContainer">
+                <div class="welcome-message">
+                    <div>
+                        <h3>👋 欢迎使用无锡鲜沣食品导航</h3>
+                        <p>点击左侧子菜单加载页面<br>点击侧边栏图标可自定义选择</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 图标选择模态框 -->
+    <div class="modal" id="iconModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>选择图标</span>
+                <button class="modal-close" onclick="closeIconModal()">×</button>
+            </div>
+            <div class="icon-grid" id="iconGrid">
+                <!-- 图标动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 自定义弹窗容器 - 解除限制版 -->
+    <div class="custom-popup" id="customPopup">
+        <div class="popup-container">
+            <div class="popup-header popup-drag-handle">
+                <span class="popup-title" id="popupTitle">页面内容</span>
+                <span class="popup-close" onclick="closeCustomPopup()">&times;</span>
+            </div>
+            <div class="popup-body" id="popupBody">
+                <iframe class="popup-iframe" id="popupIframe" frameborder="0"></iframe>
+            </div>
+            <!-- 添加大小调节手柄 -->
+            <div class="popup-resize-handle" id="popupResizeHandle"></div>
+        </div>
+    </div>
+
+    <script>
+        // 定义所有模块的快捷按键数据
+        const allModuleShortcuts = {
+            "仪表看板": [
+                { text: "数据概览", url: "https://www.kdocs.cn/wo/sl/v11It0CK" },
+                { text: "表单链接", url: "https://www.kdocs.cn/wo/sl/v1pkelW" },
+                { text: "管理手册", url: "https://www.kdocs.cn/l/cbYVf1seK1dr" },
+                { text: "作业指导书", url: "https://www.kdocs.cn/l/cudtHpq6HtjH" }
+            ],
+            "采购管理": [
+                { text: "供方信息", url: "https://f.kdocs.cn/g/9sY1DZi1/" },
+                { text: "采购登记", url: "https://f.kdocs.cn/g/mF0Cymo3/" },
+                { text: "营业执照", url: "https://www.kdocs.cn/wo/sl/v14FLAFf" },
+                { text: "生产许可", url: "https://www.kdocs.cn/wo/sl/v14Qnx7P" },
+                { text: "供方外检", url: "https://www.kdocs.cn/wo/sl/v11fhQiJ" }
+            ],
+            "仓库管理": [
+                { text: "物料出库", url: "https://f.kdocs.cn/g/YVYvl3ui/" },
+                { text: "成品入库", url: "https://www.kdocs.cn/wo/sl/v14P6Rjv" },
+                { text: "物料入库", url: "https://www.kdocs.cn/wo/sl/v1fZic0" }
+            ],
+            "基础资料": [
+                { text: "物料字典", url: "https://www.kdocs.cn/wo/sl/v116pdDK" },
+                { text: "验收标准", url: "https://f.kdocs.cn/g/5xERuMK8/" },
+                { text: "成品字典", url: "https://www.kdocs.cn/wo/sl/v1CL3cU" },
+                { text: "设备设施", url: "https://www.kdocs.cn/wo/sl/v12GODIX" },
+                { text: "过程要求", url: "https://www.kdocs.cn/wo/sl/v11xOZtT" }
+            ],
+            "人员管理": [
+                { text: "人员登记", url: "https://www.kdocs.cn/wo/sl/v14HZyhQ" },
+                { text: "健康登记", url: "https://www.kdocs.cn/wo/sl/v12spa4m" },
+                { text: "洗手消毒", url: "https://www.kdocs.cn/wo/sl/v12Yutfe" },
+                { text: "人员晨检", url: "https://www.kdocs.cn/wo/sl/v12dugBA" },
+                { text: "培训计划", url: "https://www.kdocs.cn/wo/sl/v13mDW9j" },
+                { text: "培训记录", url: "https://www.kdocs.cn/wo/sl/v1lvxdK" }
+            ],
+            "生产管理": [
+                { text: "生产投料", url: "https://f.kdocs.cn/g/eKTYLv9D/" },
+                { text: "包材消毒", url: "https://f.kdocs.cn/g/p7HzCVTY/" },
+                { text: "包装记录", url: "https://f.kdocs.cn/g/HW6TVrVB/" }
+            ],
+            "销售管理": [
+                { text: "销售出库", url: "https://f.kdocs.cn/g/pN7uXEKi/" },
+                { text: "客户登记", url: "https://www.kdocs.cn/wo/sl/v12AShyR" }
+            ],
+            "质量管理": [
+                { text: "物料验收", url: "https://f.kdocs.cn/g/iR9aNuud/" },
+                { text: "净重检测", url: "https://f.kdocs.cn/g/dvWYz9vd/" },
+                { text: "出厂检验", url: "https://f.wps.cn/g/gHPrjQqK/" },
+                { text: "成品留样", url: "https://www.kdocs.cn/wo/sl/v11dg4vE" },
+                { text: "工艺监控", url: "https://f.wps.cn/g/CE2643sL/" }
+            ],
+            "环境设备": [
+                { text: "更衣检查", url: "https://www.kdocs.cn/wo/sl/v1FUncE" },
+                { text: "内包检查", url: "https://www.kdocs.cn/wo/sl/v1c0gdY" },
+                { text: "卫生虫害", url: "https://www.kdocs.cn/wo/sl/v11ilFiw" },
+                { text: "温度监控", url: "https://www.kdocs.cn/wo/sl/v141uruz" },
+                { text: "设备洗消", url: "https://www.kdocs.cn/wo/sl/v12RoLGj" },
+                { text: "消毒液配置", url: "https://www.kdocs.cn/wo/sl/v12eaiUM" }
+            ]
+        };
+
+        // 获取默认快捷方式
+        function getDefaultShortcuts(module) {
+            return allModuleShortcuts[module] || allModuleShortcuts["基础资料"];
+        }
+
+        // 完整的菜单数据
+        const fullMenuData = [
+            {
+                "id": 0,
+                "text": "仪表看板",
+                "icon": "📊",
+                "shortcut": {
+                    "hint": "Ctrl+0",
+                    "targetUrl": "https://www.kdocs.cn/wo/sl/v1pkelW"
+                },
+                "children": [
+                    {
+                        "id": 00,
+                        "text": "数据概览",
+                        "url": "https://www.kdocs.cn/wo/sl/v11It0CK",
+                        "icon": "📊",
+                        "pageShortcuts": getDefaultShortcuts("仪表看板")
+                    },
+                    {
+                        "id": 01,
+                        "text": "表单链接",
+                        "url": "https://www.kdocs.cn/wo/sl/v1pkelW",
+                        "icon": "📋",
+                        "pageShortcuts": getDefaultShortcuts("仪表看板")
+                    },
+                    {
+                        "id": 02,
+                        "text": "管理手册",
+                        "url": "https://www.kdocs.cn/l/cbYVf1seK1dr",
+                        "icon": "📚",
+                        "pageShortcuts": getDefaultShortcuts("仪表看板")
+                    },
+                    {
+                        "id": 03,
+                        "text": "作业指导书",
+                        "url": "https://www.kdocs.cn/l/cudtHpq6HtjH",
+                        "icon": "📝",
+                        "pageShortcuts": getDefaultShortcuts("仪表看板")
+                    }
+                ]
+            },
+            {
+                "id": 1,
+                "text": "基础资料",
+                "icon": "📋",
+                "shortcut": {
+                    "hint": "Ctrl+1",
+                    "targetUrl": "https://www.kdocs.cn/wo/sl/v14PFQDs"
+                },
+                "children": [
+                    {
+                        "id": 11,
+                        "text": "执行标准",
+                        "url": "https://www.kdocs.cn/wo/sl/v14PFQDs",
+                        "icon": "📜",
+                        "pageShortcuts": getDefaultShortcuts("基础资料")
+                    },
+                    {
+                        "id": 12,
+                        "text": "检验项目",
+                        "url": "https://www.kdocs.cn/wo/sl/v13n8Xoo",
+                        "icon": "🔍",
+                        "pageShortcuts": getDefaultShortcuts("基础资料")
+                    },
+                    {
+                        "id": 13,
+                        "text": "物料字典",
+                        "url": "https://www.kdocs.cn/wo/sl/v112lC9u",
+                        "icon": "📚",
+                        "pageShortcuts": getDefaultShortcuts("基础资料")
+                    },
+                    {
+                        "id": 14,
+                        "text": "成品字典",
+                        "url": "https://www.kdocs.cn/wo/sl/v132f862",
+                        "icon": "🏷️",
+                        "pageShortcuts": getDefaultShortcuts("基础资料")
+                    },
+                    {
+                        "id": 15,
+                        "text": "设备设施",
+                        "url": "https://www.kdocs.cn/wo/sl/v14a0gmp",
+                        "icon": "🔧",
+                        "pageShortcuts": getDefaultShortcuts("基础资料")
+                    },
+                    {
+                        "id": 16,
+                        "text": "工艺要求",
+                        "url": "https://www.kdocs.cn/wo/sl/v11YXlC1",
+                        "icon": "📝",
+                        "pageShortcuts": getDefaultShortcuts("基础资料")
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "text": "人员管理",
+                "icon": "👥",
+                "shortcut": {
+                    "hint": "Ctrl+2",
+                    "targetUrl": "https://www.kdocs.cn/wo/sl/v141Ulay"
+                },
+                "children": [
+                    {
+                        "id": 21,
+                        "text": "人员名单",
+                        "url": "https://www.kdocs.cn/wo/sl/v141Ulay",
+                        "icon": "📇",
+                        "pageShortcuts": getDefaultShortcuts("人员管理")
+                    },
+                    {
+                        "id": 22,
+                        "text": "健康管理",
+                        "url": "https://www.kdocs.cn/wo/sl/v11ZSrDE",
+                        "icon": "❤️",
+                        "pageShortcuts": getDefaultShortcuts("人员管理")
+                    },
+                    {
+                        "id": 23,
+                        "text": "洗手消毒",
+                        "url": "https://www.kdocs.cn/wo/sl/v11FjsCl",
+                        "icon": "🧼",
+                        "pageShortcuts": getDefaultShortcuts("人员管理")
+                    },
+                    {
+                        "id": 24,
+                        "text": "卫生晨检",
+                        "url": "https://www.kdocs.cn/wo/sl/v13Jjvxk",
+                        "icon": "🌅",
+                        "pageShortcuts": getDefaultShortcuts("人员管理")
+                    },
+                    {
+                        "id": 25,
+                        "text": "培训计划",
+                        "url": "https://www.kdocs.cn/wo/sl/v145vjwf",
+                        "icon": "📅",
+                        "pageShortcuts": getDefaultShortcuts("人员管理")
+                    },
+                    {
+                        "id": 26,
+                        "text": "培训记录",
+                        "url": "https://www.kdocs.cn/wo/sl/v11nuNYF",
+                        "icon": "📝",
+                        "pageShortcuts": getDefaultShortcuts("人员管理")
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "text": "采购管理",
+                "icon": "🛒",
+                "shortcut": {
+                    "hint": "Ctrl+3",
+                    "targetUrl": "https://www.kdocs.cn/wo/sl/v12uR3LT"
+                },
+                "children": [
+                    {
+                        "id": 31,
+                        "text": "供方信息",
+                        "url": "https://www.kdocs.cn/wo/sl/v12uR3LT",
+                        "icon": "🤝",
+                        "pageShortcuts": getDefaultShortcuts("采购管理")
+                    },
+                    {
+                        "id": 33,
+                        "text": "采购订单",
+                        "url": "https://www.kdocs.cn/wo/sl/v11DnAox",
+                        "icon": "📑",
+                        "pageShortcuts": getDefaultShortcuts("采购管理")
+                    },
+                    {
+                        "id": 34,
+                        "text": "采购明细",
+                        "url": "https://www.kdocs.cn/wo/sl/v11CPlFV",
+                        "icon": "📋",
+                        "pageShortcuts": getDefaultShortcuts("采购管理")
+                    },
+                    {
+                        "id": 35,
+                        "text": "营业执照",
+                        "url": "https://www.kdocs.cn/wo/sl/v13JkplT",
+                        "icon": "📜",
+                        "pageShortcuts": getDefaultShortcuts("采购管理")
+                    },
+                    {
+                        "id": 36,
+                        "text": "生产许可",
+                        "url": "https://www.kdocs.cn/wo/sl/v1300xCk",
+                        "icon": "✅",
+                        "pageShortcuts": getDefaultShortcuts("采购管理")
+                    },
+                    {
+                        "id": 37,
+                        "text": "供方外检",
+                        "url": "https://www.kdocs.cn/wo/sl/v143hwJD",
+                        "icon": "🔬",
+                        "pageShortcuts": getDefaultShortcuts("采购管理")
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "text": "仓库管理",
+                "icon": "📦",
+                "shortcut": {
+                    "hint": "Ctrl+4",
+                    "targetUrl": "https://www.kdocs.cn/wo/sl/v13z5nGC"
+                },
+                "children": [
+                    {
+                        "id": 41,
+                        "text": "物料库存",
+                        "url": "https://www.kdocs.cn/wo/sl/v13z5nGC",
+                        "icon": "📊",
+                        "pageShortcuts": getDefaultShortcuts("仓库管理")
+                    },
+                    {
+                        "id": 42,
+                        "text": "物料入库",
+                        "url": "https://www.kdocs.cn/wo/sl/v139B4rS",
+                        "icon": "📥",
+                        "pageShortcuts": getDefaultShortcuts("仓库管理")
+                    },
+                    {
+                        "id": 43,
+                        "text": "物料出库",
+                        "url": "https://www.kdocs.cn/wo/sl/v12kRdRh",
+                        "icon": "📤",
+                        "pageShortcuts": getDefaultShortcuts("仓库管理")
+                    },
+                    {
+                        "id": 44,
+                        "text": "出库明细",
+                        "url": "https://www.kdocs.cn/wo/sl/v13SYnce",
+                        "icon": "📋",
+                        "pageShortcuts": getDefaultShortcuts("仓库管理")
+                    },
+                    {
+                        "id": 45,
+                        "text": "成品入库",
+                        "url": "https://www.kdocs.cn/wo/sl/v11xA98w",
+                        "icon": "🏭",
+                        "pageShortcuts": getDefaultShortcuts("仓库管理")
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "text": "质量管理",
+                "icon": "✅",
+                "shortcut": {
+                    "hint": "Ctrl+5",
+                    "targetUrl": "https://www.kdocs.cn/wo/sl/v1t4xkE"
+                },
+                "children": [
+                    {
+                        "id": 51,
+                        "text": "物料验收",
+                        "url": "https://www.kdocs.cn/wo/sl/v1t4xkE",
+                        "icon": "🔍",
+                        "pageShortcuts": getDefaultShortcuts("质量管理")
+                    },
+                    {
+                        "id": 52,
+                        "text": "出厂检验",
+                        "url": "https://www.kdocs.cn/wo/sl/v1Cp26t",
+                        "icon": "🏭",
+                        "pageShortcuts": getDefaultShortcuts("质量管理")
+                    },
+                    {
+                        "id": 53,
+                        "text": "净重检验",
+                        "url": "https://www.kdocs.cn/wo/sl/v12RohY4",
+                        "icon": "⚖️",
+                        "pageShortcuts": getDefaultShortcuts("质量管理")
+                    },
+                    {
+                        "id": 54,
+                        "text": "成品留样",
+                        "url": "https://www.kdocs.cn/wo/sl/v12tuDzO",
+                        "icon": "📦",
+                        "pageShortcuts": getDefaultShortcuts("质量管理")
+                    },
+                    {
+                        "id": 55,
+                        "text": "工艺控制",
+                        "url": "https://www.kdocs.cn/wo/sl/v12QfnJB",
+                        "icon": "🔧",
+                        "pageShortcuts": getDefaultShortcuts("质量管理")
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "text": "生产管理",
+                "icon": "🏭",
+                "shortcut": {
+                    "hint": "Ctrl+6",
+                    "targetUrl": "https://www.kdocs.cn/wo/sl/v137hGW7"
+                },
+                "children": [
+                    {
+                        "id": 61,
+                        "text": "投料记录",
+                        "url": "https://www.kdocs.cn/wo/sl/v137hGW7",
+                        "icon": "⚗️",
+                        "pageShortcuts": getDefaultShortcuts("生产管理")
+                    },
+                    {
+                        "id": 62,
+                        "text": "投料明细",
+                        "url": "https://www.kdocs.cn/wo/sl/v18vLEt",
+                        "icon": "📋",
+                        "pageShortcuts": getDefaultShortcuts("生产管理")
+                    },
+                    {
+                        "id": 63,
+                        "text": "包材消毒",
+                        "url": "https://www.kdocs.cn/wo/sl/v11zw0S1",
+                        "icon": "🧼",
+                        "pageShortcuts": getDefaultShortcuts("生产管理")
+                    },
+                    {
+                        "id": 64,
+                        "text": "包装记录",
+                        "url": "https://www.kdocs.cn/wo/sl/v1Kwsww",
+                        "icon": "📦",
+                        "pageShortcuts": getDefaultShortcuts("生产管理")
+                    },
+                    {
+                        "id": 65,
+                        "text": "内包使用",
+                        "url": "https://www.kdocs.cn/wo/sl/v1jt1Sg",
+                        "icon": "📦",
+                        "pageShortcuts": getDefaultShortcuts("生产管理")
+                    },
+                    {
+                        "id": 66,
+                        "text": "外包使用",
+                        "url": "https://www.kdocs.cn/wo/sl/v1U7j7A",
+                        "icon": "📦",
+                        "pageShortcuts": getDefaultShortcuts("生产管理")
+                    }
+                ]
+            },
+            {
+                "id": 7,
+                "text": "销售管理",
+                "icon": "📈",
+                "shortcut": {
+                    "hint": "Ctrl+7",
+                    "targetUrl": "https://www.kdocs.cn/wo/sl/v11pahGI"
+                },
+                "children": [
+                    {
+                        "id": 71,
+                        "text": "客户管理",
+                        "url": "https://www.kdocs.cn/wo/sl/v11pahGI",
+                        "icon": "👥",
+                        "pageShortcuts": getDefaultShortcuts("销售管理")
+                    },
+                    {
+                        "id": 72,
+                        "text": "出库单据",
+                        "url": "https://www.kdocs.cn/wo/sl/v11QKAWY",
+                        "icon": "📑",
+                        "pageShortcuts": getDefaultShortcuts("销售管理")
+                    },
+                    {
+                        "id": 73,
+                        "text": "出库明细",
+                        "url": "https://www.kdocs.cn/wo/sl/v14Km0iS",
+                        "icon": "📋",
+                        "pageShortcuts": getDefaultShortcuts("销售管理")
+                    }
+                ]
+            },
+            {
+                "id": 8,
+                "text": "环境设备",
+                "icon": "🏭",
+                "shortcut": {
+                    "hint": "Ctrl+8",
+                    "targetUrl": "https://www.kdocs.cn/wo/sl/v12M9GO3"
+                },
+                "children": [
+                    {
+                        "id": 81,
+                        "text": "更衣检查",
+                        "url": "https://www.kdocs.cn/wo/sl/v12M9GO3",
+                        "icon": "👕",
+                        "pageShortcuts": getDefaultShortcuts("环境设备")
+                    },
+                    {
+                        "id": 82,
+                        "text": "内包检查",
+                        "url": "https://www.kdocs.cn/wo/sl/v11Bknxz",
+                        "icon": "🔍",
+                        "pageShortcuts": getDefaultShortcuts("环境设备")
+                    },
+                    {
+                        "id": 83,
+                        "text": "卫生虫害",
+                        "url": "https://www.kdocs.cn/wo/sl/v1MiI7a",
+                        "icon": "🐜",
+                        "pageShortcuts": getDefaultShortcuts("环境设备")
+                    },
+                    {
+                        "id": 84,
+                        "text": "温度监控",
+                        "url": "https://www.kdocs.cn/wo/sl/v12B7qNB",
+                        "icon": "🌡️",
+                        "pageShortcuts": getDefaultShortcuts("环境设备")
+                    },
+                    {
+                        "id": 85,
+                        "text": "设备洗消",
+                        "url": "https://www.kdocs.cn/wo/sl/v12gTyv8",
+                        "icon": "🧼",
+                        "pageShortcuts": getDefaultShortcuts("环境设备")
+                    },
+                    {
+                        "id": 86,
+                        "text": "消毒配置",
+                        "url": "https://www.kdocs.cn/wo/sl/v1LbWpg",
+                        "icon": "🧴",
+                        "pageShortcuts": getDefaultShortcuts("环境设备")
+                    }
+                ]
+            }
+        ];
+
+        // 当前菜单数据
+        let menuData = [...fullMenuData];
+        let expandedItems = new Set();
+        let activeSubItemId = null;
+        let activeMainMenuId = null;
+        const STORAGE_KEYS = {
+            MENU: 'xianfengMenuData',
+            EXPANDED: 'xianfengExpandedItems',
+            ACTIVE_MAIN_MENU: 'xianfengActiveMainMenu'
+        };
+
+        // 商务风格图标库
+        const COMMON_ICONS = [
+            '📊', '📈', '📉', '📋', '📝', '📅', '📆', '📇',
+            '📌', '🔖', '🏷️', '📎', '📏', '📐', '📜', '📃',
+            '📄', '📑', '📒', '📓', '📔', '📕', '📗', '📘',
+            '📙', '📚', '🔍', '🔎', '🔗', '🔏', '🔐', '🔑',
+            '⚙️', '🔧', '🔨', '🛠️', '📦', '📤', '📥', '🔄'
+        ];
+
+        // DOM加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                loadLocalData();
+                renderMenu();
+                renderShortcutsForActiveMenu();
+                initIconGrid();
+                initPopupDrag();
+                initPopupResize(); // 初始化大小调节功能
+            } catch (error) {
+                console.error('初始化错误:', error);
+                resetToInitialState();
+            }
+        });
+
+        // 重置功能
+        function resetToInitialState() {
+            localStorage.removeItem(STORAGE_KEYS.MENU);
+            localStorage.removeItem(STORAGE_KEYS.EXPANDED);
+            localStorage.removeItem(STORAGE_KEYS.ACTIVE_MAIN_MENU);
+            
+            menuData = [...fullMenuData];
+            expandedItems = new Set();
+            activeSubItemId = null;
+            activeMainMenuId = null;
+            
+            renderMenu();
+            resetToHome();
+        }
+
+        function loadLocalData() {
+            try {
+                const savedMenu = localStorage.getItem(STORAGE_KEYS.MENU);
+                const savedExpanded = localStorage.getItem(STORAGE_KEYS.EXPANDED);
+                const savedActiveMainMenu = localStorage.getItem(STORAGE_KEYS.ACTIVE_MAIN_MENU);
+                
+                if (savedMenu) {
+                    menuData = JSON.parse(savedMenu);
+                }
+                if (savedExpanded) {
+                    expandedItems = new Set(JSON.parse(savedExpanded));
+                }
+                if (savedActiveMainMenu) {
+                    activeMainMenuId = parseInt(savedActiveMainMenu);
+                }
+            } catch (error) {
+                console.error('加载本地数据错误:', error);
+                localStorage.removeItem(STORAGE_KEYS.MENU);
+                localStorage.removeItem(STORAGE_KEYS.EXPANDED);
+                localStorage.removeItem(STORAGE_KEYS.ACTIVE_MAIN_MENU);
+                expandedItems = new Set();
+            }
+        }
+
+        function renderMenu() {
+            const menuList = document.getElementById('menuList');
+            if (!menuList) {
+                console.error('未找到菜单容器元素');
+                return;
+            }
+            
+            menuList.innerHTML = '';
+
+            if (!Array.isArray(menuData) || menuData.length === 0) {
+                menuList.innerHTML = '<li class="menu-item"><div class="menu-header">没有菜单数据</div></li>';
+                return;
+            }
+
+            menuData.forEach(menu => {
+                const menuItem = document.createElement('li');
+                menuItem.className = `menu-item ${expandedItems.has(menu.id) ? 'expanded' : ''}`;
+                menuItem.dataset.id = menu.id;
+
+                const menuHeader = document.createElement('div');
+                menuHeader.className = `menu-header ${activeMainMenuId === menu.id ? 'active' : ''}`;
+                menuHeader.innerHTML = `
+                    <div class="menu-title">
+                        <span class="menu-icon" onclick="openIconModal(${menu.id}, 'main')">${menu.icon || '📁'}</span>
+                        <span>${menu.text || '未命名菜单'}</span>
+                    </div>
+                    ${menu.children?.length ? '<span class="menu-arrow">▶</span>' : ''}
+                `;
+
+                menuHeader.addEventListener('click', (e) => {
+                    if (e.target.closest('.menu-icon')) return;
+                    
+                    activeMainMenuId = menu.id;
+                    saveActiveMainMenu();
+                    
+                    if (menu.children?.length) {
+                        menuItem.classList.toggle('expanded');
+                        if (menuItem.classList.contains('expanded')) {
+                            expandedItems.add(menu.id);
+                        } else {
+                            expandedItems.delete(menu.id);
+                        }
+                        saveExpandedState();
+                    } else {
+                        loadContentInMainFrame(menu.shortcut.targetUrl, menu.text, null);
+                    }
+                    
+                    renderShortcutsForActiveMenu();
+                    renderMenu();
+                });
+
+                menuItem.appendChild(menuHeader);
+
+                if (menu.children?.length) {
+                    const submenu = document.createElement('ul');
+                    submenu.className = 'submenu';
+                    
+                    menu.children.forEach(child => {
+                        const subItem = document.createElement('li');
+                        subItem.className = `submenu-item ${activeSubItemId === child.id ? 'active' : ''}`;
+                        subItem.dataset.id = child.id;
+                        subItem.innerHTML = `
+                            <span class="menu-icon" onclick="openIconModal(${child.id}, 'sub', ${menu.id})">${child.icon || '📄'}</span>
+                            <span>${child.text || '未命名子项'}</span>
+                        `;
+
+                        subItem.addEventListener('click', (e) => {
+                            if (e.target.closest('.menu-icon')) return;
+                            loadContentInMainFrame(child.url, child.text, child.id);
+                            activeSubItemId = child.id;
+                            activeMainMenuId = menu.id;
+                            saveActiveMainMenu();
+                            renderShortcutsForActiveMenu();
+                            setActiveItem(child.id);
+                            renderMenu();
+                        });
+
+                        submenu.appendChild(subItem);
+                    });
+                    
+                    menuItem.appendChild(submenu);
+                }
+
+                menuList.appendChild(menuItem);
+            });
+        }
+
+        function renderShortcutsForActiveMenu() {
+            const btnContainer = document.getElementById('shortcutButtons');
+            if (!btnContainer) {
+                console.error('未找到快捷按钮容器');
+                return;
+            }
+            
+            btnContainer.innerHTML = '';
+
+            if (activeMainMenuId === null) {
+                return;
+            }
+
+            const activeMainMenu = menuData.find(menu => menu.id === activeMainMenuId);
+            if (!activeMainMenu) {
+                return;
+            }
+
+            const shortcuts = getDefaultShortcuts(activeMainMenu.text) || [];
+            
+            shortcuts.forEach(shortcut => {
+                const btn = createShortcutBtn(shortcut.text, shortcut.url);
+                btnContainer.appendChild(btn);
+            });
+        }
+
+        function createShortcutBtn(text, url) {
+            const btn = document.createElement('button');
+            btn.className = `shortcut-btn`;
+            btn.innerHTML = `${text}`;
+
+            btn.addEventListener('click', () => {
+                openCustomPopup(url, text);
+            });
+
+            return btn;
+        }
+
+        function initIconGrid() {
+            const grid = document.getElementById('iconGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+
+            COMMON_ICONS.forEach(icon => {
+                const iconItem = document.createElement('div');
+                iconItem.className = 'icon-item';
+                iconItem.textContent = icon;
+                iconItem.addEventListener('click', () => {
+                    selectIcon(icon);
+                });
+                grid.appendChild(iconItem);
+            });
+        }
+
+        let currentEditIconType = '';
+        let currentEditIconId = null;
+        let currentEditParentId = null;
+        function openIconModal(id, type, parentId = null) {
+            currentEditIconType = type;
+            currentEditIconId = id;
+            currentEditParentId = parentId;
+            const modal = document.getElementById('iconModal');
+            if (modal) {
+                modal.classList.add('show');
+            }
+        }
+
+        function closeIconModal() {
+            const modal = document.getElementById('iconModal');
+            if (modal) {
+                modal.classList.remove('show');
+            }
+            currentEditIconType = '';
+            currentEditIconId = null;
+            currentEditParentId = null;
+        }
+
+        function selectIcon(icon) {
+            if (currentEditIconType === 'main') {
+                const mainMenuIndex = menuData.findIndex(menu => menu.id === currentEditIconId);
+                if (mainMenuIndex !== -1) {
+                    menuData[mainMenuIndex].icon = icon;
+                }
+            } else if (currentEditIconType === 'sub' && currentEditParentId) {
+                const mainMenu = menuData.find(menu => menu.id === currentEditParentId);
+                if (mainMenu && mainMenu.children) {
+                    const subMenuIndex = mainMenu.children.findIndex(sub => sub.id === currentEditIconId);
+                    if (subMenuIndex !== -1) {
+                        mainMenu.children[subMenuIndex].icon = icon;
+                    }
+                }
+            }
+
+            saveMenuData();
+            renderMenu();
+            closeIconModal();
+        }
+
+        function loadContentInMainFrame(url, title, subItemId) {
+            const container = document.getElementById('iframeContainer');
+            const titleElement = document.querySelector('.content-title');
+            
+            if (!container || !titleElement) return;
+            
+            titleElement.textContent = `当前页面：${title}`;
+            container.innerHTML = '<div class="welcome-message">加载中...</div>';
+
+            setTimeout(() => {
+                container.innerHTML = `
+                    <iframe src="${url}" frameborder="0" title="${title}">
+                    </iframe>
+                `;
+                
+                const iframe = container.querySelector('iframe');
+                if (iframe) {
+                    iframe.onerror = () => {
+                        container.innerHTML = `
+                            <div class="error-message">
+                                <h3>⚠️ 页面加载失败</h3>
+                                <p>无法加载请求的页面</p>
+                                <button onclick="loadContentInMainFrame('${url}', '${title}', ${subItemId})">重试</button>
+                            </div>
+                        `;
+                    };
+                }
+            }, 300);
+        }
+
+        // 初始化弹窗拖动功能
+        function initPopupDrag() {
+            const popup = document.getElementById('customPopup');
+            const dragHandle = document.querySelector('.popup-drag-handle');
+            
+            if (!popup || !dragHandle) return;
+            
+            let isDragging = false;
+            let offsetX, offsetY;
+            
+            dragHandle.addEventListener('mousedown', (e) => {
+                if (e.target.closest('.popup-close')) return;
+                
+                isDragging = true;
+                const rect = popup.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+                
+                dragHandle.style.opacity = '0.8';
+                document.body.style.cursor = 'grabbing';
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                e.preventDefault();
+                
+                // 完全解除位置限制，允许拖到屏幕任何位置
+                const x = e.clientX - offsetX;
+                const y = e.clientY - offsetY;
+                
+                popup.style.left = `${x}px`;
+                popup.style.top = `${y}px`;
+                popup.style.transform = 'none';
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    dragHandle.style.opacity = '1';
+                    document.body.style.cursor = '';
+                }
+            });
+            
+            document.addEventListener('mouseleave', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    dragHandle.style.opacity = '1';
+                    document.body.style.cursor = '';
+                }
+            });
+        }
+
+        // 初始化弹窗大小调节功能
+        function initPopupResize() {
+            const popup = document.getElementById('customPopup');
+            const resizeHandle = document.getElementById('popupResizeHandle');
+            const popupContainer = document.querySelector('.popup-container');
+            
+            if (!popup || !resizeHandle || !popupContainer) return;
+            
+            let isResizing = false;
+            let startX, startY, startWidth, startHeight;
+            
+            resizeHandle.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                isResizing = true;
+                
+                // 获取当前弹窗尺寸和鼠标位置
+                const rect = popupContainer.getBoundingClientRect();
+                startWidth = rect.width;
+                startHeight = rect.height;
+                startX = e.clientX;
+                startY = e.clientY;
+                
+                // 改变鼠标样式
+                document.body.style.cursor = 'nwse-resize';
+                
+                // 添加临时样式以提高视觉反馈
+                popupContainer.style.transition = 'none';
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                
+                e.preventDefault();
+                
+                // 计算新尺寸（完全解除大小限制）
+                const newWidth = startWidth + (e.clientX - startX);
+                const newHeight = startHeight + (e.clientY - startY);
+                
+                // 只保留最小尺寸限制，移除最大尺寸限制
+                if (newWidth >= 300 && newHeight >= 200) {
+                    popupContainer.style.width = `${newWidth}px`;
+                    popupContainer.style.height = `${newHeight}px`;
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                    popupContainer.style.transition = '';
+                }
+            });
+            
+            document.addEventListener('mouseleave', () => {
+                if (isResizing) {
+                    isResizing = false;
+                    document.body.style.cursor = '';
+                    popupContainer.style.transition = '';
+                }
+            });
+        }
+
+        // 打开自定义弹窗
+        function openCustomPopup(url, title) {
+            const popup = document.getElementById('customPopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupIframe = document.getElementById('popupIframe');
+            
+            if (!popup || !popupTitle || !popupIframe) return;
+            
+            popupTitle.textContent = title;
+            popupIframe.src = url;
+            
+            // 显示弹窗，初始位置在屏幕中心，没有大小限制
+            popup.classList.add('show');
+            popup.style.left = '50%';
+            popup.style.top = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';
+            
+            // 解除初始大小限制，使用默认尺寸但允许调整
+            const popupContainer = document.querySelector('.popup-container');
+            if (popupContainer) {
+                popupContainer.style.width = '800px';  // 默认宽度
+                popupContainer.style.height = '600px'; // 默认高度
+            }
+            
+            document.body.style.overflow = 'hidden';
+            
+            popupIframe.onerror = () => {
+                alert(`页面加载失败: ${title}`);
+                closeCustomPopup();
+            };
+        }
+
+        // 关闭自定义弹窗
+        function closeCustomPopup() {
+            const popup = document.getElementById('customPopup');
+            const popupIframe = document.getElementById('popupIframe');
+            
+            if (!popup || !popupIframe) return;
+            
+            popup.classList.remove('show');
+            popupIframe.src = 'about:blank';
+            document.body.style.overflow = '';
+        }
+
+        function resetToHome() {
+            const container = document.getElementById('iframeContainer');
+            const titleElement = document.querySelector('.content-title');
+            
+            if (!container || !titleElement) return;
+            
+            titleElement.textContent = '当前页面：首页';
+            container.innerHTML = `
+                <div class="welcome-message">
+                    <div>
+                        <h3>👋 欢迎使用无锡鲜沣食品导航</h3>
+                        <p>点击左侧子菜单加载页面<br>点击侧边栏图标可自定义选择</p>
+                    </div>
+                </div>
+            `;
+            
+            activeSubItemId = null;
+            activeMainMenuId = null;
+            saveActiveMainMenu();
+            renderShortcutsForActiveMenu();
+            setActiveItem(null);
+            renderMenu();
+        }
+
+        function setActiveItem(id) {
+            document.querySelectorAll('.submenu-item').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            if (id) {
+                const activeEl = document.querySelector(`.submenu-item[data-id="${id}"]`);
+                if (activeEl) activeEl.classList.add('active');
+            }
+        }
+
+        function saveMenuData() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.MENU, JSON.stringify(menuData));
+            } catch (error) {
+                console.error('保存菜单数据失败:', error);
+            }
+        }
+
+        function saveExpandedState() {
+            try {
+                localStorage.setItem(STORAGE_KEYS.EXPANDED, JSON.stringify(Array.from(expandedItems)));
+            } catch (error) {
+                console.error('保存展开状态失败:', error);
+            }
+        }
+
+        function saveActiveMainMenu() {
+            try {
+                if (activeMainMenuId !== null) {
+                    localStorage.setItem(STORAGE_KEYS.ACTIVE_MAIN_MENU, activeMainMenuId.toString());
+                } else {
+                    localStorage.removeItem(STORAGE_KEYS.ACTIVE_MAIN_MENU);
+                }
+            } catch (error) {
+                console.error('保存激活的一级菜单失败:', error);
+            }
+        }
+
+        // 点击模态框外部可以关闭
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('iconModal');
+            if (modal && modal.classList.contains('show') && e.target === modal) {
+                closeIconModal();
+            }
+            
+            const customPopup = document.getElementById('customPopup');
+            if (customPopup && customPopup.classList.contains('show') && e.target === customPopup) {
+                closeCustomPopup();
+            }
+        });
+
+        // 键盘快捷键支持
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeIconModal();
+                closeCustomPopup();
+                return;
+            }
+            
+            if (e.ctrlKey) {
+                // 支持Ctrl+0打开仪表看板
+                if (e.key === '0') {
+                    const menuId = 0;
+                    const menu = menuData.find(m => m.id === menuId);
+                    if (menu) {
+                        e.preventDefault();
+                        activeMainMenuId = menuId;
+                        saveActiveMainMenu();
+                        expandedItems.add(menuId);
+                        saveExpandedState();
+                        renderMenu();
+                        renderShortcutsForActiveMenu();
+                        
+                        if (menu.children && menu.children.length > 0) {
+                            const firstChild = menu.children[0];
+                            loadContentInMainFrame(firstChild.url, firstChild.text, firstChild.id);
+                            activeSubItemId = firstChild.id;
+                            setActiveItem(firstChild.id);
+                        } else if (menu.shortcut && menu.shortcut.targetUrl) {
+                            loadContentInMainFrame(menu.shortcut.targetUrl, menu.text, null);
+                        }
+                    }
+                }
+                // 其他数字快捷键
+                else if (e.key >= '1' && e.key <= '8') {
+                    const menuId = parseInt(e.key);
+                    const menu = menuData.find(m => m.id === menuId);
+                    if (menu) {
+                        e.preventDefault();
+                        activeMainMenuId = menuId;
+                        saveActiveMainMenu();
+                        expandedItems.add(menuId);
+                        saveExpandedState();
+                        renderMenu();
+                        renderShortcutsForActiveMenu();
+                        
+                        if (menu.children && menu.children.length > 0) {
+                            const firstChild = menu.children[0];
+                            loadContentInMainFrame(firstChild.url, firstChild.text, firstChild.id);
+                            activeSubItemId = firstChild.id;
+                            setActiveItem(firstChild.id);
+                        } else if (menu.shortcut && menu.shortcut.targetUrl) {
+                            loadContentInMainFrame(menu.shortcut.targetUrl, menu.text, null);
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+    
